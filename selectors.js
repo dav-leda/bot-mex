@@ -8,17 +8,27 @@ export default {
 
   iniciarSesionBtn: 'body > div:nth-child(3) > div > main > div > div > div > div > div.background > div:nth-child(2) > div:nth-child(3) > div.container > div.right > div > div:nth-child(9) > button',
 
-  modal2: 'body > div:nth-child(3) > div.container > div:nth-child(1) > div > div > div > div > div > div > div > div > div > a > span > svg',
+  inputEmail: 'input[type=text]',
+
+  inputPassword: 'input[type=password]',
+
+  modalConfDatos: 'body > div:nth-child(3) > div.container > div:nth-child(1) > div > div > div > div > div > div > div > div > div > a > span > svg',
+
+  modalConfDatos2: 'body > div:nth-child(3) > div.container > div:nth-child(1) > div > div > div > div > div > div > div > div > div > a > span > svg',
 
   programarBtn: 'body > div:nth-child(3) > div.container > div:nth-child(3) > div:nth-child(4) > a',
 
   modal3: 'body > div:nth-child(3) > div.container > div:nth-child(3) > div > div > div > div:nth-child(2) > div:nth-child(1) > div > div > div > div > div > div > div > a > span > svg',
 
+  modal4: 'body > div:nth-child(3) > div.container > div:nth-child(3) > div > div > div > div:nth-child(2) > div:nth-child(1) > div > div > div > div > div > div > div > a > span > svg',
+
   selectPais: 'body > div:nth-child(3) > div.container > div:nth-child(3) > div > div > div > div:nth-child(2) > div:nth-child(1) > form > div:nth-child(3) > div:nth-child(1) > div.inputcontainer > div > div',
+
+  selectPais2: 'body > div:nth-child(3) > div.container > div:nth-child(3) > div > div > div > div:nth-child(2) > div:nth-child(1) > form > div:nth-child(3) > div:nth-child(1) > div.inputcontainer > div > div',
 
   inputPais: '#vs4__combobox > div.vs__selected-options > input',
 
-  modal4: 'body > div:nth-child(3) > div.container > div:nth-child(3) > div > div > div > div:nth-child(2) > div:nth-child(1) > div > div > div > div > div > div > div > a > span > svg',
+  modalSiLaOficina: 'body > div:nth-child(3) > div.container > div:nth-child(3) > div > div > div > div:nth-child(2) > div:nth-child(1) > div > div > div > div > div > div > div > a > span > svg',
 
   selectEstado: 'body > div:nth-child(3) > div.container > div:nth-child(3) > div > div > div > div:nth-child(2) > div:nth-child(1) > form > div:nth-child(3) > div:nth-child(2) > div.inputcontainer > div > div',
 
@@ -42,8 +52,20 @@ export default {
 
   inputLugarNacLocalidad: 'body > div:nth-child(3) > div.container > div:nth-child(3) > div > div > div > div:nth-child(2) > div:nth-child(1) > form > div:nth-child(5) > div > div > div > div:nth-child(3) > form > div:nth-child(6) > div:nth-child(1) > div > input',
 
+  inputLugarNacEstado: 'body > div:nth-child(3) > div.container > div:nth-child(3) > div > div > div > div:nth-child(2) > div:nth-child(1) > form > div:nth-child(5) > div > div > div > div:nth-child(3) > form > div:nth-child(5) > div:nth-child(2) > div > div > div',
+
   verificarBtn: 'body > div:nth-child(3) > div.container > div:nth-child(3) > div > div > div > div:nth-child(2) > div:nth-child(1) > form > div:nth-child(5) > div > div > div > div:nth-child(3) > form > div:nth-child(8) > button',
   
+  opcionSiNo: 'body > div:nth-child(3) > div.container > div:nth-child(3) > div > div > div > div:nth-child(2) > div:nth-child(1) > form > div:nth-child(5) > div > div > div > div:nth-child(3) > form > div:nth-child(9) > div > p > label:nth-child(2) > input[type=radio]',
+
+  continuarBtn: 'body > div:nth-child(3) > div.container > div:nth-child(3) > div > div > div > div:nth-child(2) > div:nth-child(2) > div > button.btn.btn-primary',
+
+  modalAntesPresentarse: '#up > div > div > div > div > div > div > div > a > span > svg',
+
+  checkboxVisas: '#A00',
+
+  agregarBtn: '#up > form > div:nth-child(4) > div > div > div:nth-child(2) > div:nth-child(4) > button',
+
 
 
 }
