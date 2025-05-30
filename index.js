@@ -1,14 +1,12 @@
 import puppeteer from 'puppeteer';
 import selectors from './selectors.js';
-import { sleep } from './helpers.js';
+import { sleep, waitThenClick, countDown } from './helpers.js';
 
 const { EMAIL, PASSWORD, NOMBRE, APELLIDO, FECHANAC, SEXO, PAIS, CIUDAD, ESTADO, ESTADO_CIVIL } = process.env;
 const citasPage = 'https://citas.sre.gob.mx/';
 
 // Tiempo de delay al tipear, en microsegundos
 const delay = { delay: 100 };
-// Tiempo de espera antes de abortar
-const timeout = { timeout: 9999 };
 
 
 // Abrir Chromium
@@ -17,248 +15,240 @@ const browser = await puppeteer.launch({ headless: false })
 const page = await browser.newPage()
 
 
-try {
-  // Ir a la pagina de citas de la embajada
-  await page.goto(citasPage)
-  
-  // Clickear en ventana modal 'Oficinas Consulares'
-  await page.waitForSelector(selectors.oficinaBtn, timeout)
-  await page.click(selectors.oficinaBtn)
-  
-  // Cerrar ventana modal Llave MX
-  await page.waitForSelector(selectors.modal1, timeout) 
-  await page.click(selectors.modal1)
-  
-  // Clickear en iniciar sesion con Llave MX
-  await page.waitForSelector(selectors.iniciarSesionBtn, timeout) 
-  await page.click(selectors.iniciarSesionBtn)
+// Ir a la pagina de citas de la embajada
+await page.goto(citasPage)
 
-  // Esperar a que termine de cargar la pagina
-  await page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 9999 });
+await countDown(6)
 
-  // Ingresar email
-  await page.waitForSelector(selectors.inputEmail, timeout) 
-  await page.click(selectors.inputEmail)
-  await page.type(selectors.inputEmail, EMAIL, delay)
+// Clickear en ventana modal 'Oficinas Consulares'
+await waitThenClick(page, selectors.oficinaBtn)
 
-  // Ingresar password
-  await page.waitForSelector(selectors.inputPassword, timeout)
-  await page.click(selectors.inputPassword)
-  await page.type(selectors.inputPassword, PASSWORD, delay)
+// Cerrar ventana modal Llave MX
+await waitThenClick(page, selectors.modal1)
 
-  // Enviar formulario de Login
-  await page.waitForSelector('button[type=submit]', timeout)
-  await page.click('button[type=submit]')
+// Clickear en iniciar sesion con Llave MX
+await waitThenClick(page, selectors.iniciarSesionBtn)
 
-  // Esperar a que redirija a la nueva pagina
-  await page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 9999 });
+// Esperar a que termine de cargar la pagina
+await countDown(6)
 
-  // Cerrar ventana modal "Confirmacion de datos"
-  await page.waitForSelector(selectors.modalConfDatos, timeout);
-  await page.click(selectors.modalConfDatos)
+// Da error, nunca llega a estado "idle"
+//await page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 9999 });
 
-  // Clickear en boton "Programar"
-  await page.waitForSelector(selectors.programarBtn, timeout);
-  await page.click(selectors.programarBtn);
+// Ingresar email
+await waitThenClick(page, selectors.inputEmail)
+await sleep(2)
+await page.type(selectors.inputEmail, EMAIL, delay)
 
-  await sleep(7)
+// Ingresar password
+await waitThenClick(page, selectors.inputPassword)
+await sleep(2)
+await page.type(selectors.inputPassword, PASSWORD, delay)
 
-  // Esperar a que redirija a la nueva pagina
-  //await page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 9999 });
+// Enviar formulario de Login
+await waitThenClick(page, 'button[type=submit]')
 
+// Esperar a que redirija a la nueva pagina
+// await page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 9999 });
+await countDown(8)
 
-  // Cerrar modal "Si la oficina..."
-  await page.waitForSelector(selectors.modal3, timeout);
-  await page.click(selectors.modal3)
+// Cerrar ventana modal "Confirmacion de datos" 
+await waitThenClick(page, selectors.modalConfDatos2)
 
-  // Seleccionar oficina consular
-  // Clickear en selector de paises
-  const inputPais = '#vs4__combobox';
-  await page.waitForSelector(inputPais, timeout);
-  await page.click(inputPais)
+// Clickear en boton "Programar"
+await waitThenClick(page, selectors.programarBtn)
 
-  // Ingresar pais
-  await page.waitForSelector(selectors.inputPais, timeout);
-  await page.type(selectors.inputPais, PAIS)
+// Esperar a que redirija a la nueva pagina
+await countDown(8)
 
-  // Clickear opcion en dropdown
-  await page.waitForSelector('#vs4__listbox', timeout);
-  await page.click('#vs4__listbox')
-
-  await sleep(3)
-
-  // Cerrar modal "Si la oficina..."
-  await page.waitForSelector(selectors.modal4, timeout);
-  await page.click(selectors.modal4)
-
-  // Clickear en selector de estados
-  await page.waitForSelector(selectors.selectEstado, timeout);
-  await page.click(selectors.selectEstado)
-
-  // Ingresar estado
-  await page.waitForSelector(selectors.inputEstado, timeout);
-  await page.type(selectors.inputEstado, CIUDAD)
-
-  // Clickear opcion en dropdown
-  await page.waitForSelector('#vs2__listbox', timeout);
-  await page.click('#vs2__listbox')
-
-  // Clickear en selector de oficinas
-  await page.waitForSelector(selectors.selectOficina, timeout);
-  await page.click(selectors.selectOficina)
-
-  // Ingresar oficina
-  await page.waitForSelector(selectors.inputOficina, timeout);
-  await page.type(selectors.inputOficina, CIUDAD)
-
-  // Clickear opcion en dropdown
-  await page.waitForSelector('#vs3__listbox', timeout);
-  await page.click('#vs3__listbox')
-
-  // Clickear boton Seleccionar
-  await page.waitForSelector(selectors.seleccionarBtn, timeout);
-  await page.click(selectors.seleccionarBtn);
-
-  // Cerrar modal "Confirmacion de oficina"
-  await page.waitForSelector(selectors.modal5, timeout);
-  await page.click(selectors.modal5);
-
-  // Clickear en link "Agergar manualmente"
-  await page.waitForSelector(selectors.agregarLink, timeout);
-  await page.click(selectors.agregarLink)
-
-  // Input nombre
-  await page.waitForSelector(selectors.inputNombre, timeout);
-  await page.click(selectors.inputNombre);
-  await page.type(selectors.inputNombre, NOMBRE, delay);
-
-  // Input apellido
-  await page.waitForSelector(selectors.inputApellido, timeout);
-  await page.click(selectors.inputApellido);
-  await page.type(selectors.inputApellido, APELLIDO, delay);
-
-  // Input fecha de nacimiento
-  // #dp1747603282365
-  // selector por atributo HTML: element[attribute]
-  const inputFechaId = '#dp1747502611741';
-
-  // Deshabilitar readonly en el input de fecha
-  const disableReadonly = await page.evaluate( () => {
-    // Buscar elemento input de fecha
-    let inputFecha = document.querySelector('#dp1747502611741');
-    // Si encuentra el elemento, deshabilitar el readonly
-    if (inputFecha) {
-      inputFecha.removeAttribute('readonly');
-    } else {
-      // Loggea en la consola del browser, no en la terminal
-      console.log('El id del input de fecha no fue encontrado')
-    }
-    return inputFecha
-  })
+// Cerrar modal "Si la oficina..." OK
+await waitThenClick(page, selectors.modal3)
 
 
-  // Tipear fecha, solo si deshabilito el readonly del input
-  if (disableReadonly) {
-    await page.waitForSelector(inputFechaId, timeout);
-    await page.click(inputFechaId);
-    await page.type(inputFechaId, FECHANAC, delay);
+// Seleccionar oficina consular
+// Clickear en selector de paises
+const inputPais = '#vs4__combobox';
+await waitThenClick(page, inputPais)
+
+// Ingresar pais
+await page.waitForSelector(selectors.inputPais)
+await page.type(selectors.inputPais, PAIS)
+await sleep(2)
+
+// Clickear opcion en dropdown
+const dropdownPais = '#vs4__listbox';
+await waitThenClick(page, dropdownPais)
+
+await countDown(6)
+
+// Cerrar modal "Si la oficina..." OK
+await waitThenClick(page, selectors.modal4)
+
+
+// Clickear en selector de estados
+await waitThenClick(page, selectors.selectEstado)
+
+// Ingresar estado
+await page.waitForSelector(selectors.inputEstado)
+await page.type(selectors.inputEstado, CIUDAD)
+await sleep(2)
+
+// Clickear opcion en dropdown OK
+const dropdownEstado = '#vs2__listbox';
+await waitThenClick(page, dropdownEstado)
+
+await countDown(3)
+
+// Clickear en selector de oficinas
+await waitThenClick(page, selectors.selectOficina)
+
+// Ingresar oficina
+await page.waitForSelector(selectors.inputOficina, timeout);
+await page.type(selectors.inputOficina, CIUDAD)
+await sleep(2)
+
+// Clickear opcion en dropdown
+const dropdownOficina = '#vs3__listbox';
+await waitThenClick(page, dropdownOficina)
+
+await countDown(3)
+
+// Clickear en boton Seleccionar
+await waitThenClick(page, selectors.seleccionarBtn)
+await sleep(2)
+
+// Cerrar modal "Confirmacion de oficina"
+await waitThenClick(page, selectors.modal5)
+
+// Clickear en link "Agregar manualmente"
+await waitThenClick(page, selectors.agregarLink)
+
+await countDown(6)
+
+// Input nombre
+await waitThenClick(page, selectors.inputNombre)
+await sleep(2)
+await page.type(selectors.inputNombre, NOMBRE, delay)
+
+// Input apellido
+await waitThenClick(page, selectors.inputApellido)
+await sleep(2)
+await page.type(selectors.inputApellido, APELLIDO, delay)
+
+
+// Input fecha de nacimiento
+// selector por atributo HTML: element[attribute]
+const inputFechaId = '#dp1747502611741'; // OJO: El ID cambia en cada request
+
+// Deshabilitar readonly en el input de fecha
+const disableReadonly = await page.evaluate( () => {
+  // Buscar elemento input de fecha OJO: El ID cambia en cada request
+  let inputFecha = document.querySelector('#dp1747502611741');
+  // Si encuentra el elemento, deshabilitar el readonly
+  if (inputFecha) {
+    inputFecha.removeAttribute('readonly');
   } else {
-    console.log({disableReadonly})
+    // Loggea en la consola del browser, no en la terminal
+    console.log('El id del input de fecha no fue encontrado')
   }
+  return inputFecha
+})
 
 
-  // Input sexo
-  const inputSexo = '#vs5__combobox';
-  await page.waitForSelector(inputSexo, timeout);
-  await page.click(inputSexo);
-  await page.type(inputSexo, SEXO);
+// Tipear fecha, solo si deshabilito el readonly del input
+if (disableReadonly) {
+  await waitThenClick(page, inputFechaId)
+  await page.type(inputFechaId, FECHANAC, delay)
+  await sleep(2)
 
-  // Clickear opcion del select
-  await page.waitForSelector('#vs5__listbox', timeout);
-  await page.click('#vs5__listbox');
-
-  // Input nacionalidad
-  const inputNac = '#vs6__combobox';
-  await page.waitForSelector(inputNac, timeout);
-  await page.click(inputNac);
-  await page.type(inputNac, PAIS);
-  
-  // Clickear opcion del select
-  await page.waitForSelector('#vs6__listbox', timeout);
-  await page.click('#vs6__listbox');
-
-  // Input estado civil
-  const inputEstadoCivil = '#vs7__combobox';
-  await page.waitForSelector(inputEstadoCivil, timeout);
-  await page.click(inputEstadoCivil);
-  await page.type(inputEstadoCivil, ESTADO_CIVIL);
-
-  // Clickear opcion del select
-  await page.waitForSelector('#vs7__listbox', timeout);
-  await page.click('#vs7__listbox');
-
-  // Input Lugar de nacimiento PAIS
-  const inputLugarNacPais = '#vs8__combobox';
-  await page.waitForSelector(inputLugarNacPais, timeout);
-  await page.click(inputLugarNacPais);
-  await page.type(inputLugarNacPais, PAIS);
-  
-  // Clickear opcion del select
-  await page.waitForSelector('#vs8__listbox', timeout);
-  await page.click('#vs8__listbox');
-
-
-  // Input Lugar de nacimiento ESTADO not found
-  const inputLugarNacEstado = '#vs9__combobox';
-  await page.waitForSelector(inputLugarNacEstado, timeout);
-  await page.click(inputLugarNacEstado);
-  await page.type(inputLugarNacEstado, ESTADO);
-
-  // Clickear opcion del select
-  await page.waitForSelector('#vs9__listbox', timeout);
-  await page.click('#vs9__listbox');
-
-
-  // Input Lugar de nacimiento LOCALIDAD
-  await page.waitForSelector(selectors.inputLugarNacLocalidad, timeout);
-  await page.click(selectors.inputLugarNacLocalidad);
-  await page.type(selectors.inputLugarNacLocalidad, CIUDAD, delay)
-
-
-  // Clickear en boton "Verificar"
-  await page.waitForSelector(selectors.verificarBtn, timeout);
-  await page.click(selectors.verificarBtn);
-
-  // Clickear en boton radio NO
-  await page.waitForSelector(selectors.opcionSiNo, timeout);
-  await page.click(selectors.opcionSiNo);
-
-  // Clickear en boton Continuar
-  await page.waitForSelector(selectors.continuarBtn, timeout);
-  await page.click(selectors.continuarBtn);
-
-   // Esperar a que redirija a la nueva pagina
-  await page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 9999 });
-
-  // Cerrar modal "Antes de presentarse..."
-  await page.waitForSelector(selectors.modalAntesPresentarse, timeout);
-  await page.click(selectors.modalAntesPresentarse)
-  
-  // Clickear en checkbox Visas
-  await page.waitForSelector(selectors.checkboxVisas, timeout);
-  await page.click(selectors.checkboxVisas)
-
-  // Clickear en boton Agregar
-  await page.waitForSelector(selectors.agregarBtn, timeout);
-  await page.click(selectors.agregarBtn)
-
-
-
-
-
-} catch (error) {
-  console.log(error)
+} else {
+  console.log({disableReadonly})
 }
 
+
+// Input sexo
+const inputSexo = '#vs5__combobox';
+await waitThenClick(page, inputSexo)
+await sleep(2)
+await page.type(inputSexo, SEXO, delay)
+
+// Clickear opcion del select
+const selectSexo = '#vs5__listbox';
+await waitThenClick(page, selectSexo)
+await sleep(2)
+
+
+// Input nacionalidad
+const inputNac = '#vs6__combobox';
+await waitThenClick(page, inputNac)
+await sleep(2)
+await page.type(inputNac, PAIS, delay)
+
+// Clickear en opcion del select
+const selectNac = '#vs6__listbox';
+await waitThenClick(page, selectNac)
+await sleep(2)
+
+
+// Input estado civil
+const inputEstadoCivil = '#vs7__combobox';
+await waitThenClick(page, inputEstadoCivil)
+await sleep(2)
+await page.type(inputEstadoCivil, ESTADO_CIVIL, delay)
+
+// Clickear opcion del select
+const selectEstCivil = '#vs7__listbox';
+await waitThenClick(page, selectEstCivil)
+await sleep(2)
+
+// Input lugar de nacimiento PAIS
+const inputLugarNacPais = '#vs8__combobox';
+await waitThenClick(page, inputLugarNacPais)
+await sleep(2)
+await page.type(inputLugarNacPais, PAIS)
+
+// Clickear opcion del select
+const selectLugarNacPais = '#vs8__listbox';
+await waitThenClick(page, selectLugarNacPais)
+await sleep(2)
+
+
+// Input Lugar de nacimiento ESTADO
+const inputLugarNacEstado = '#vs9__combobox';
+await waitThenClick(page, inputLugarNacEstado)
+await sleep(2)
+await page.type(inputLugarNacEstado, ESTADO, delay)
+
+// Clickear opcion del select
+const selectLugarNacEstado = '#vs9__listbox';
+await waitThenClick(page, selectLugarNacEstado)
+await sleep(2)
+
+
+// Input Lugar de nacimiento LOCALIDAD
+await waitThenClick(page, selectors.inputLugarNacLocalidad)
+await sleep(2)
+await page.type(selectors.inputLugarNacLocalidad, CIUDAD, delay)
+
+// Clickear en boton "Verificar"
+await waitThenClick(page, selectors.verificarBtn)
+
+// Clickear en boton radio "NO"
+await waitThenClick(page, selectors.opcionSiNo)
+
+// Clickear en boton Continuar
+await waitThenClick(page, selectors.continuarBtn)
+
+// Esperar a que redirija a la nueva pagina
+await countDown(8)
+
+// Cerrar modal "Antes de presentarse..."
+await waitThenClick(page, selectors.modalAntesPresentarse)
+
+// Clickear en checkbox Visas
+await waitThenClick(page, selectors.checkboxVisas)
+
+// Clickear en boton Agregar
+await waitThenClick(page, selectors.agregarBtn)
 
 
