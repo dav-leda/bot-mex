@@ -14,7 +14,7 @@ export default {
 
   modalConfDatos: 'body > div:nth-child(3) > div.container > div:nth-child(1) > div > div > div > div > div > div > div > div > div > a > span > svg',
 
-  modalConfDatos2: 'body > div:nth-child(3) > div.container > div:nth-child(1) > div > div > div > div > div > div > div > div > div > a > span > svg',
+  modalConfDatos2: 'body > div:nth-child(3) > div.container > div:nth-child(1) > div > div > div > div > div > div > div > div > div > a > span > svg > path:nth-child(1)',
 
   programarBtn: 'body > div:nth-child(3) > div.container > div:nth-child(3) > div:nth-child(4) > a',
 
